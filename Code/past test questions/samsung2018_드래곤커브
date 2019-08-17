@@ -1,0 +1,51 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+const int MAX = 110;
+int area[MAX][MAX];
+int d[4][2] = {{0,1},{-1,0},{0,-1},{1,0}};
+int cd[3][2] = {{1,0},{0,1},{1,1}};
+bool check[MAX][MAX];
+int rev[4] = {1,2,3,0};
+void dragonCurve(int r, int c, int sd, int g){
+	//curve
+	vector<int> reversed;
+	check[r][c] = true;
+	reversed.push_back(sd);
+	r+= d[sd][0], c+= d[sd][1];
+	check[r][c] = true;
+	for(int i =0;i < g;i++){
+		int size = reversed.size()-1;
+		for(int j = size ; j>=0;j--){ 
+			int nd = rev[reversed[j]];
+			r += d[nd][0], c+= d[nd][1];
+			check[r][c]  = true;
+			reversed.push_back(nd);
+		}
+	}
+}
+int main(){
+	int n;
+	cin>>n;
+	for(int i=0;i<n;i++){
+		int r,c,sd,g;
+		cin>>c>>r>>sd>>g;
+		dragonCurve(r,c,sd,g);
+	}
+	int ans =0;
+	// count square
+	for(int i=0;i<=100;i++){
+		for(int j=0;j<=100;j++){
+			if(!check[i][j]) continue;
+			bool flag = true;
+			for(int dd =0;dd<3;dd++){
+				int nr = i + cd[dd][0], nc = j + cd[dd][1];
+				if(nr<0 || nr>100 || nc<0 || nc>100) flag =false;
+				if(!check[nr][nc]) flag  = false;
+			}
+			if(flag) ans++;
+		}
+	}
+	cout<< ans;
+	return 0;
+}
